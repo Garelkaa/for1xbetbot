@@ -1,8 +1,10 @@
-from signature import bot, dp 
+from signature import bot, db
 from aiogram import Router, types, F
 from aiogram.filters.command import CommandStart
 from middlewares.middlewares import CheckDb
 from datetime import datetime
+from aiogram.types import FSInputFile
+from keyboard.client_kb import main_menu, stats_kb
 
 user = Router(name='user')
 user.message.middleware(CheckDb())
@@ -25,12 +27,12 @@ XBoss🇰🇬 поможет тебе пополнить или вывести �
 https://t.me/kgXBoss_chat
 
 📆 На {current_time}
-Бот работает стабильно и заслуживает доверие пользователей! 🏆""")
+Бот работает стабильно и заслуживает доверие пользователей! 🏆""", reply_markup=main_menu)
     
 
 @user.message(F.text == 'Бонусы')
 async def bonus(message: types.Message):
-    await bot.send_video(message.from_user.id, video='', caption=f"""Зарегистрировайтесь через наш
+    await bot.send_video(message.from_user.id, video=FSInputFile(r'/Users/andrijserbak/Desktop/workFolder/for1xbetbot/images/video.mp4'), caption=f"""Зарегистрировайтесь через наш
 Промокод - XBoss5
 И Получаете до 35000 Сомов (120%) На первый депозит!
 Чтобы получить бонус вам нужно
@@ -43,5 +45,18 @@ async def bonus(message: types.Message):
 129167 * 120% = 35000
 25000 * 120% = 30000""")
     
+    
+@user.message(F.text == "Статистика")
+async def stats(message: types.Message):
+    await bot.send_message(message.from_user.id, f"Какую статистику вы хотите посмотреть?", reply_markup=stats_kb)
+    
 
-
+@user.message(F.text == 'Пополнений')
+async def add_balance_all_time(message: types.Message):
+    await bot.send_message(message.from_user.id, f"".join(db.get_stats_add_balance(message.from_user.id)))
+    
+    
+@user.message(F.text == 'Выводов')
+async def add_balance_all_time(message: types.Message):
+    await bot.send_message(message.from_user.id, f"".join(db.get_stats_widthraw_balance(message.from_user.id)))
+    

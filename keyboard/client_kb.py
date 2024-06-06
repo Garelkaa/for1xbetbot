@@ -1,4 +1,4 @@
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
@@ -10,7 +10,21 @@ def choose_bank():
     
     return markup
 
+main_menu = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="Пополнить баланс"),KeyboardButton(text="Вывести средства")],
+        [KeyboardButton(text="Статистика"),KeyboardButton(text="Топы")],
+        [KeyboardButton(text="Бонусы")],
+    ],
+    resize_keyboard=True
+)
 
+stats_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text='Выводов'), KeyboardButton(text='Пополнений')]
+    ],
+    resize_keyboard=True
+)
 
 def choice_bank_withdraw_nav():
     banks = ['MBANK', 'QIWI', 'MegaPay', 'Optima bank', 'Balance kg', 'О!Деньги', 'Сбербанк', 'Элкарт', 'Элсом', "Единицы на сотовый"]

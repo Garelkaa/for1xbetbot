@@ -2,6 +2,7 @@ from signature import bot, FSMContext, State, StatesGroup, dp
 from handlers.client import user
 from aiogram import F, types
 from keyboard.client_kb import choose_bank, paid_keyboard, choice_bank_withdraw_nav
+from keyboard.admin_kb import verif_add_balance, verif_widthraw_balance
 
 
 class AddBalanceState(StatesGroup):
@@ -43,7 +44,6 @@ async def wait_pay(message: types.Message, state: FSMContext):
     await state.update_data(id_xbet=message.text)
     
     
-
 @dp.callback_query(lambda c: c.data == 'i_have_paid')
 async def send_photo_pay(callback_query: types.CallbackQuery, state: FSMContext):
     await bot.send_message(callback_query.from_user.id, f"""Отправьте скриншот чека операции!
@@ -65,7 +65,8 @@ async def confirm_payment(callback_query: types.CallbackQuery, state: FSMContext
                      f"Без бонуса: {sum_value}")
     photo = callback_query.photo[-1]
     
-    await bot.send_photo(-4200018730, photo=photo.file_id, caption=admin_message)
+    await bot.send_photo(-4200018730, photo=photo.file_id)
+    await bot.send_message(-4200018730, f"{admin_message}", reply_markup=verif_add_balance(callback_query.from_user.id, sum_value))
     await state.clear()
     await callback_query.answer(f"""✅Ваша заявка принята на проверку!
 
@@ -141,4 +142,4 @@ async def input_code(message: types.Message, state: FSMContext):
 1XBET ID: {id_xbet}
 Секретный код: {code}
 Способ снятия: {selected_bank}
-Рекизиты: {number_card}""")
+Рекизиты: {number_card}""" , reply_markup=verif_widthraw_balance(message.from_user.id))
