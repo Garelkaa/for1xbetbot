@@ -5,10 +5,10 @@ from datetime import datetime
 from handlers.client import user
 
 
-# @user.message(F.photo)
-# async def photo(message: types.Message):
-#     photo_data = message.photo[-1]
-#     await message.answer(f"{photo_data}")
+@user.message(F.photo)
+async def photo(message: types.Message):
+    photo_data = message.photo[-1]
+    await message.answer(f"{photo_data}")
 
 
 @dp.callback_query(lambda c: c.data == 'check_success')

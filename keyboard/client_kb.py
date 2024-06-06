@@ -1,4 +1,5 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
 def choose_bank():
@@ -9,6 +10,14 @@ def choose_bank():
     
     return markup
 
+
+
+def choice_bank_withdraw_nav():
+    banks = ['MBANK', 'QIWI', 'MegaPay', 'Optima bank', 'Balance kg', 'О!Деньги', 'Сбербанк', 'Элкарт', 'Элсом', "Единицы на сотовый"]
+    buttons = [InlineKeyboardButton(text=bank, callback_data=f'choose_bank_{bank.lower().replace(" ", "_")}') for bank in banks]
+    builder = InlineKeyboardBuilder()
+    builder.row(*buttons, width=3)
+    return builder.as_markup()
 
 def paid_keyboard():
     i_have_paid = InlineKeyboardButton(text='Я оплатил', callback_data='i_have_paid')
