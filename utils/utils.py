@@ -1,10 +1,17 @@
 from signature import bot, dp
-from aiogram import types
+from aiogram import types, F
 from keyboard.chat_kb import chat_by_kb
 from datetime import datetime
+from handlers.client import user
 
 
-@dp.callback_query()
+# @user.message(F.photo)
+# async def photo(message: types.Message):
+#     photo_data = message.photo[-1]
+#     await message.answer(f"{photo_data}")
+
+
+@dp.callback_query(lambda c: c.data == 'check_success')
 async def check_sub(message: types.CallbackQuery):
     chat_member = await bot.get_chat_member(chat_id=-1002242167058, user_id=message.from_user.id)
     if chat_member.status == 'left':
