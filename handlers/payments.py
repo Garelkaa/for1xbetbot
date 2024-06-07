@@ -29,9 +29,13 @@ async def new_sum(callback_query: types.CallbackQuery, state: FSMContext):
 
 @dp.message(AddBalanceState.sum)
 async def input_id(message: types.Message, state: FSMContext):
-    await bot.send_photo(message.from_user.id, photo="AgACAgIAAxkBAANiZmF9YuMR_xQbwsWT3cRdONGzlWAAAl_bMRuRQQhL6Dafmzq-jV0BAAMCAAN5AAM1BA", caption="Введите ваш ID(номер счета от 1XBET)")
-    await state.update_data(sum=message.text)
-    await state.set_state(AddBalanceState.id_xbet)
+    sum = int(message.text)
+    if sum >= 20:
+        await bot.send_photo(message.from_user.id, photo="AgACAgIAAxkBAANiZmF9YuMR_xQbwsWT3cRdONGzlWAAAl_bMRuRQQhL6Dafmzq-jV0BAAMCAAN5AAM1BA", caption="Введите ваш ID(номер счета от 1XBET)")
+        await state.update_data(sum=sum)
+        await state.set_state(AddBalanceState.id_xbet)
+    else:
+        await message.answer("Минимальная сумма пополнения - 20 сум")
 
 @dp.message(AddBalanceState.id_xbet)
 async def wait_pay(message: types.Message, state: FSMContext):

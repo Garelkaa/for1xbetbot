@@ -38,4 +38,27 @@ class CheckDb(BaseMiddleware):
                     return await handler(event, data)
             else:
                 return await handler(event, data)
+            
+
+class CheckAdmin(BaseMiddleware):
+    async def __call__(
+        self,
+        handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],
+        event: Message,
+        data: Dict[str, Any]
+    ) -> Any:
+        user_id = event.from_user.id
+        
+        if db.is_admin(user_id):
+            if event.chat.type == 'private':
+                chat_member = await event.bot.get_chat_member(chat_id=-1002242167058, user_id=event.from_user.id)
+                if chat_member.status == 'left':
+                    await event.answer(
+                        f"Для продолжения пользования этим ботом - подпишитесь на наш канал!", reply_markup=chat_by_kb()
+                    )
+                else:
+                    return await handler(event, data)
+            else:
+                return await handler(event, data)
+        
         
