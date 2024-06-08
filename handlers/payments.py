@@ -1,4 +1,4 @@
-from signature import bot, FSMContext, State, StatesGroup, dp
+from signature import bot, FSMContext, State, StatesGroup, dp, db
 from handlers.client import user
 from aiogram import F, types
 from keyboard.client_kb import choose_bank, paid_keyboard, choice_bank_withdraw_nav
@@ -20,7 +20,10 @@ class WithdrawBalanceState(StatesGroup):
 
 @user.message(F.text == 'Пополнить баланс')
 async def add_balance(message: types.Message):
-    await message.answer("Укажите удобный вам способ пополнения счета\n\nВыберите банк:", reply_markup=choose_bank())
+    if db.get_req():
+        await message.answer("Укажите удобный вам способ пополнения счета\n\nВыберите банк:", reply_markup=choose_bank())
+    else:
+        await message.answer("Мы временно не можем обрабатывать заявки на пополнение!😓\nПожалуйста потерпите.")
 
 @user.callback_query(lambda c: c.data == 'choose_bank_mbank')
 async def new_sum(callback_query: types.CallbackQuery, state: FSMContext):
@@ -44,7 +47,7 @@ async def wait_pay(message: types.Message, state: FSMContext):
     await message.answer(f"""Отправьте {sum_value} сомов по следующим реквизитам "MBANK":
 После перевода нажмите "Я оплатил"
 
-+996 502073454""", reply_markup=paid_keyboard())
+{db.get_req()}""", reply_markup=paid_keyboard())
     await state.update_data(id_xbet=message.text)
     
     
@@ -60,11 +63,13 @@ async def confirm_payment(callback_query: types.CallbackQuery, state: FSMContext
     username = callback_query.from_user.first_name
     sum_value = user_data.get('sum')
     id_xbet = user_data.get('id_xbet')
+    bonus = db.get_bonus_user(callback_query.from_user.id)
+    sum_with_bonus = sum_value + (sum_value * (bonus / 100))
 
     admin_message = (f"Чат ID: {callback_query.from_user.id}\n"
                      f"Чел: @{username}\n"
                      f"1XBET ID: {id_xbet}\n"
-                     f"Сумма пополнения: {sum_value}\n"
+                     f"Сумма пополнения: {sum_with_bonus:.2f}\n"
                      f"Способ пополнения: MBANK\n"
                      f"Без бонуса: {sum_value}")
     photo = callback_query.photo[-1]
@@ -77,7 +82,7 @@ async def confirm_payment(callback_query: types.CallbackQuery, state: FSMContext
 Ваш кошелек: {id_xbet}
 🆔Номер ID (1XBET): {id_xbet}
 💵Сумма: {sum_value}
-💵Сумма с учетом бонуса: {sum_value}
+💵Сумма с учетом бонуса: {sum_with_bonus:.2f}
 Способ: MBANK
 
 ⚠️ Пополнение занимает от 1 секунды до 15 минут.

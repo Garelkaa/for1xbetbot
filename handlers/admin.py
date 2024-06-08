@@ -20,6 +20,9 @@ async def accept_user(callback_query: types.CallbackQuery):
     telegram_id = data.split('_')[2]
     sum = data.split('_')[3]
     text = callback_query.message.text
+    bonus = db.get_bonus_user(callback_query.from_user.id)
+    if bonus:
+        bonus = bonus/100
     
     current_time = datetime.datetime.now(UTC)
     
@@ -29,6 +32,7 @@ async def accept_user(callback_query: types.CallbackQuery):
     
     minutes = time_difference.total_seconds() // 60
     seconds = time_difference.total_seconds() % 60
+    db.add_balance(telegram_id, sum * bonus)
     
     await bot.edit_message_text(f"{text}" + f"\n\n(ЗАЯВКА ОДОБРЕНА!)\nВремя принятия решения: {int(minutes)} минут {int(seconds)} секунд", callback_query.message.chat.id, callback_query.message.message_id, reply_markup=None)
     await bot.send_message(telegram_id, f"""Ваш счет успешно пополнен!
@@ -247,3 +251,8 @@ async def send_broadcast(message: types.Message):
             logging.error(f"Не удалось отправить сообщение пользователю {user_id}: {e}")
 
     await message.reply("Рассылка завершена.")
+    
+
+@admin.message(Command("обновить"))
+async def update_bonus(message: types.Message):
+    db.update_ranking()

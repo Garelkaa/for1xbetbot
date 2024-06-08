@@ -59,4 +59,21 @@ async def add_balance_all_time(message: types.Message):
 @user.message(F.text == 'Выводов')
 async def add_balance_all_time(message: types.Message):
     await bot.send_message(message.from_user.id, f"".join(db.get_stats_widthraw_balance(message.from_user.id)))
+
+
+@user.message(F.text == 'Мой статус')
+async def rate_user(message: types.Message):
+    if db.get_rank_user(message.from_user.id):
+        bonus = db.get_bonus_user(message.from_user.id)
+        ranking = db.get_rank_user(message.from_user.id)
+        response = (f"|. Ваш текущий статус: Базовый\n"
+                    f"Ваше место в рейтинге: {ranking}\n"
+                    f"§ Ваш персональный бонус: {bonus}%\n"
+                    f"Рейтинг обновляется ежемесячно в начале и посередине месяца.\n"
+                    f"Самые активные клиенты, отличающиеся суммарными депозитами, получают следующие бонусы:\n"
+                    f"Топ-3 - 3%\n"
+                    f"Топ-20 - 2%\n"
+                    f"Топ-50 - 1%")
+    
+    await message.answer(response)
     

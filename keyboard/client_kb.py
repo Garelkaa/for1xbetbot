@@ -13,7 +13,7 @@ def choose_bank():
 main_menu = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="Пополнить баланс"),KeyboardButton(text="Вывести средства")],
-        [KeyboardButton(text="Статистика"),KeyboardButton(text="Топы")],
+        [KeyboardButton(text="Статистика"),KeyboardButton(text="Мой статус")],
         [KeyboardButton(text="Бонусы")],
     ],
     resize_keyboard=True
