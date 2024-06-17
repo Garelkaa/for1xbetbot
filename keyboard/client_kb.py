@@ -12,16 +12,16 @@ def choose_bank():
 
 main_menu = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton(text="Пополнить баланс"),KeyboardButton(text="Вывести средства")],
-        [KeyboardButton(text="Статистика"),KeyboardButton(text="Мой статус")],
-        [KeyboardButton(text="Бонусы")],
+        [KeyboardButton(text="💵 Пополнить баланс"),KeyboardButton(text="💸 Вывести средства")],
+        [KeyboardButton(text="📋 Статистика"),KeyboardButton(text="🏆 Мой статус")],
+        [KeyboardButton(text="🎁 Бонусы")],
     ],
     resize_keyboard=True
 )
 
 stats_kb = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton(text='Выводов'), KeyboardButton(text='Пополнений')]
+        [KeyboardButton(text='💸 Выводов'), KeyboardButton(text='💵 Пополнений')]
     ],
     resize_keyboard=True
 )
@@ -34,7 +34,7 @@ def choice_bank_withdraw_nav():
     return builder.as_markup()
 
 def paid_keyboard():
-    i_have_paid = InlineKeyboardButton(text='Я оплатил', callback_data='i_have_paid')
+    i_have_paid = InlineKeyboardButton(text='✅ Я оплатил', callback_data='i_have_paid')
     markup = InlineKeyboardMarkup(inline_keyboard=[
         [i_have_paid]
     ])

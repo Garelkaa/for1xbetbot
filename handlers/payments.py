@@ -18,7 +18,7 @@ class WithdrawBalanceState(StatesGroup):
     number_card = State()
     
 
-@user.message(F.text == 'Пополнить баланс')
+@user.message(F.text == '💵 Пополнить баланс')
 async def add_balance(message: types.Message):
     if db.get_req():
         await message.answer("Укажите удобный вам способ пополнения счета\n\nВыберите банк:", reply_markup=choose_bank())
@@ -91,7 +91,7 @@ async def confirm_payment(callback_query: types.CallbackQuery, state: FSMContext
 
 ✅Вы получите уведомление о зачислении средств!""")
     
-@user.message(F.text == 'Вывести средства')
+@user.message(F.text == '💸 Вывести средства')
 async def withdraw_balance(message: types.Message, state: FSMContext):
     await message.answer("""
 Укажите удобный вам способ снятия средств со счета

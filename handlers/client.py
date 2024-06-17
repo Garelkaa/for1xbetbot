@@ -30,7 +30,7 @@ https://t.me/kgXBoss_chat
 Бот работает стабильно и заслуживает доверие пользователей! 🏆""", reply_markup=main_menu)
     
 
-@user.message(F.text == 'Бонусы')
+@user.message(F.text == '🎁 Бонусы')
 async def bonus(message: types.Message):
     await bot.send_video(message.from_user.id, video=FSInputFile(r'/Users/andrijserbak/Desktop/workFolder/for1xbetbot/images/video.mp4'), caption=f"""Зарегистрировайтесь через наш
 Промокод - XBoss5
@@ -46,22 +46,22 @@ async def bonus(message: types.Message):
 25000 * 120% = 30000""")
     
     
-@user.message(F.text == "Статистика")
+@user.message(F.text == "📋 Статистика")
 async def stats(message: types.Message):
     await bot.send_message(message.from_user.id, f"Какую статистику вы хотите посмотреть?", reply_markup=stats_kb)
     
 
-@user.message(F.text == 'Пополнений')
+@user.message(F.text == '💵 Пополнений')
 async def add_balance_all_time(message: types.Message):
     await bot.send_message(message.from_user.id, f"".join(db.get_stats_add_balance(message.from_user.id)))
     
     
-@user.message(F.text == 'Выводов')
+@user.message(F.text == '💸 Выводов')
 async def add_balance_all_time(message: types.Message):
     await bot.send_message(message.from_user.id, f"".join(db.get_stats_widthraw_balance(message.from_user.id)))
 
 
-@user.message(F.text == 'Мой статус')
+@user.message(F.text == '🏆 Мой статус')
 async def rate_user(message: types.Message):
     if db.get_rank_user(message.from_user.id):
         bonus = db.get_bonus_user(message.from_user.id)
