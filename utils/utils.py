@@ -1,6 +1,7 @@
 from signature import bot, dp
 from aiogram import types, F
 from keyboard.chat_kb import chat_by_kb
+from keyboard.client_kb import main_menu
 from datetime import datetime
 from handlers.client import user
 
@@ -40,4 +41,4 @@ XBoss🇰🇬 поможет тебе пополнить или вывести �
 https://t.me/kgXBoss_chat
 
 📆 На {current_time}
-Бот работает стабильно и заслуживает доверие пользователей! 🏆""")
+Бот работает стабильно и заслуживает доверие пользователей! 🏆""", reply_markup=main_menu)

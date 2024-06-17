@@ -18,27 +18,39 @@ admin.message.middleware(CheckAdmin())
 async def accept_user(callback_query: types.CallbackQuery):
     data = callback_query.data
     telegram_id = data.split('_')[2]
-    sum = data.split('_')[3]
+    sum_str = data.split('_')[3]
+    
+    try:
+        sum_val = float(sum_str)
+    except ValueError:
+        await bot.send_message(callback_query.message.chat.id, "Invalid sum value.")
+        return
+    
     text = callback_query.message.text
     bonus = db.get_bonus_user(callback_query.from_user.id)
+    
     if bonus:
-        bonus = bonus/100
+        bonus_multiplier = bonus / 100
+    else:
+        bonus_multiplier = 0.0  # No bonus applied if bonus is None
+
+    # Calculate the total amount to be added to the balance
+    total_amount = sum_val + (sum_val * bonus_multiplier)
     
     current_time = datetime.datetime.now(UTC)
-    
     message_time = callback_query.message.date.replace(tzinfo=UTC)
-
     time_difference = current_time - message_time
-    
     minutes = time_difference.total_seconds() // 60
     seconds = time_difference.total_seconds() % 60
-    db.add_balance(telegram_id, sum * bonus)
+    
+    db.add_balance(telegram_id, total_amount)
     
     await bot.edit_message_text(f"{text}" + f"\n\n(ЗАЯВКА ОДОБРЕНА!)\nВремя принятия решения: {int(minutes)} минут {int(seconds)} секунд", callback_query.message.chat.id, callback_query.message.message_id, reply_markup=None)
     await bot.send_message(telegram_id, f"""Ваш счет успешно пополнен!
 Удачной игры и больших выигрышей
 Спасибо что выбираете нашу кассу""")
-    db.add_balance_stats(telegram_id, sum=sum, date=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    db.add_balance_stats(telegram_id, sum=total_amount, date=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
 
 @admin.callback_query(lambda callback_query: callback_query.data.startswith('decline_add'))
 async def decline_user(callback_query: types.CallbackQuery):
